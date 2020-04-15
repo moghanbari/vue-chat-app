@@ -14,37 +14,6 @@
                     <span class="time">2:09 PM</span>
                     <span class="preview">I was wondering...</span>
                 </li>
-                <li class="person active" data-chat="person2">
-                    <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/382994/dog.png" alt="">
-                    <span class="name">Dog Woofson</span>
-                    <span class="time">1:44 PM</span>
-                    <span class="preview">I've forgotten how it felt before</span>
-                </li>
-                <li class="person" data-chat="person3">
-                    <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/382994/louis-ck.jpeg" alt="">
-                    <span class="name">Louis CK</span>
-                    <span class="time">2:09 PM</span>
-                    <span class="preview">But we’re probably gonna need a new carpet.</span>
-                </li>
-                <li class="person" data-chat="person4">
-                    <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/382994/bo-jackson.jpg" alt="">
-                    <span class="name">Bo Jackson</span>
-                    <span class="time">2:09 PM</span>
-                    <span class="preview">It’s not that bad...</span>
-                </li>
-                <li class="person" data-chat="person5">
-                    <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/382994/michael-jordan.jpg" alt="">
-                    <span class="name">Michael Jordan</span>
-                    <span class="time">2:09 PM</span>
-                    <span class="preview">Wasup for the third time like is
-you blind bitch</span>
-                </li>
-                <li class="person" data-chat="person6">
-                    <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/382994/drake.jpg" alt="">
-                    <span class="name">Drake</span>
-                    <span class="time">2:09 PM</span>
-                    <span class="preview">howdoyoudoaspace</span>
-                </li>
             </ul>
         </div>
         <div class="right">
@@ -67,114 +36,23 @@ you blind bitch</span>
                 <div class="conversation-start">
                     <span>Today, 5:38 PM</span>
                 </div>
-                <div class="bubble you">
-                    Hello, can you hear me?
-                </div>
-                <div class="bubble you">
-                    I'm in California dreaming
-                </div>
-                <div class="bubble me">
-                    ... about who we used to be.
-                </div>
-                <div class="bubble me">
-                    Are you serious?
-                </div>
-                <div class="bubble you">
-                    When we were younger and free...
-                </div>
-                <div class="bubble you">
-                    I've forgotten how it felt before
-                </div>
-            </div>
-            <div class="chat" data-chat="person3">
-                <div class="conversation-start">
-                    <span>Today, 3:38 AM</span>
-                </div>
-                <div class="bubble you">
-                    Hey human!
-                </div>
-                <div class="bubble you">
-                    Umm... Someone took a shit in the hallway.
-                </div>
-                <div class="bubble me">
-                    ... what.
-                </div>
-                <div class="bubble me">
-                    Are you serious?
-                </div>
-                <div class="bubble you">
-                    I mean...
-                </div>
-                <div class="bubble you">
-                    It’s not that bad...
-                </div>
-                <div class="bubble you">
-                    But we’re probably gonna need a new carpet.
-                </div>
-            </div>
-            <div class="chat" data-chat="person4">
-                <div class="conversation-start">
-                    <span>Yesterday, 4:20 PM</span>
-                </div>
-                <div class="bubble me">
-                    Hey human!
-                </div>
-                <div class="bubble me">
-                    Umm... Someone took a shit in the hallway.
-                </div>
-                <div class="bubble you">
-                    ... what.
-                </div>
-                <div class="bubble you">
-                    Are you serious?
-                </div>
-                <div class="bubble me">
-                    I mean...
-                </div>
-                <div class="bubble me">
-                    It’s not that bad...
-                </div>
-            </div>
-            <div class="chat" data-chat="person5">
-                <div class="conversation-start">
-                    <span>Today, 6:28 AM</span>
-                </div>
-                <div class="bubble you">
-                    Wasup
-                </div>
-                <div class="bubble you">
-                    Wasup
-                </div>
-                <div class="bubble you">
-                    Wasup for the third time like is <br>you blind bitch
-                </div>
-
-            </div>
-            <div class="chat" data-chat="person6">
-                <div class="conversation-start">
-                    <span>Monday, 1:27 PM</span>
-                </div>
-                <div class="bubble you">
-                    So, how's your new phone?
-                </div>
-                <div class="bubble you">
-                    You finally have a smartphone :D
-                </div>
-                <div class="bubble me">
-                    Drake?
-                </div>
-                <div class="bubble me">
-                    Why aren't you answering?
-                </div>
-                <div class="bubble you">
-                    howdoyoudoaspace
+                <div
+                  v-for="singleMessage in allMessages"
+                  v-bind:key="singleMessage.author.id"
+                  :class="[singleMessage.author.id === user.uid ? 'bubble me' : 'bubble you']"
+                >
+                  {{singleMessage.message}}
                 </div>
             </div>
             <div class="write">
-                <a href="javascript:;" class="write-link attach"></a>
-                <input type="text">
-                <a href="javascript:;" class="write-link smiley"></a>
-                <a href="javascript:;" class="write-link send"></a>
+              <a href="" class="write-link attach"></a>
+              <input
+                type="text"
+                v-model='message'
+                @keyup.enter='saveMessage'
+              >
+              <a href="" class="write-link smiley"></a>
+              <a href="" class="write-link send"></a>
             </div>
         </div>
     </div>
@@ -184,10 +62,61 @@ you blind bitch</span>
 
 <script lang="ts">
 import Vue from 'vue'
+import firebase from 'firebase'
 
 export default Vue.extend({
   name: 'Chat',
-  props: {
+  data () {
+    return {
+      message: '' as string,
+      allMessages: [] as Array<object>,
+      user: {} as firebase.User
+    }
+  },
+  methods: {
+    saveMessage () {
+      const db = this.$store.state.db
+      db.collection('chat').add({
+        message: this.message,
+        date: new Date(),
+        author: {
+          id: this.user.uid,
+          displayName: this.user.displayName
+        }
+      })
+
+      // ToDo: figure out a way to put following line in 'then' part of db.collection
+      this.message = ''
+    },
+    getMessages (): void {
+      const db = this.$store.state.db
+      db.collection('chat').orderBy('date').onSnapshot((querySnapshot: any) => {
+        this.allMessages = []
+        querySnapshot.forEach((doc: any) => {
+          this.allMessages.push(doc.data())
+        })
+      })
+    },
+    fillUser (): void {
+      firebase.auth().onAuthStateChanged(user => {
+        if (user) {
+          this.user = user
+        } else {
+          this.user = {} as firebase.User
+        }
+      })
+    }
+  },
+  created () {
+    this.fillUser()
+    this.getMessages()
+  },
+  beforeCreate () {
+    firebase.auth().onAuthStateChanged(user => {
+      if (!user) {
+        this.$router.push('/login')
+      }
+    })
   }
 })
 </script>
