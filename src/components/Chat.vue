@@ -1,62 +1,37 @@
 <template>
   <div class="chat">
     <div class="wrapper">
-    <div class="container">
-        <div class="left">
-            <div class="top">
-                <input type="text" placeholder="Search">
-                <a href="javascript:;" class="search"></a>
-            </div>
-            <ul class="people">
-                <li class="person" data-chat="person1">
-                    <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/382994/thomas.jpg" alt="">
-                    <span class="name">Thomas Bangalter</span>
-                    <span class="time">2:09 PM</span>
-                    <span class="preview">I was wondering...</span>
-                </li>
-            </ul>
-        </div>
+      <div class="container">
         <div class="right">
-            <div class="top"><span>To: <span class="name">Dog Woofson</span></span></div>
-            <div class="chat" data-chat="person1">
-                <div class="conversation-start">
-                    <span>Today, 6:48 AM</span>
-                </div>
-                <div class="bubble you">
-                    Hello,
-                </div>
-                <div class="bubble you">
-                    it's me.
-                </div>
-                <div class="bubble you">
-                    I was wondering...
-                </div>
-            </div>
-            <div class="chat active-chat" data-chat="person2">
-                <div class="conversation-start">
-                    <span>Today, 5:38 PM</span>
-                </div>
-                <div
-                  v-for="singleMessage in allMessages"
-                  v-bind:key="singleMessage.author.id"
-                  :class="[singleMessage.author.id === user.uid ? 'bubble me' : 'bubble you']"
-                >
-                  {{singleMessage.message}}
-                </div>
-            </div>
-            <div class="write">
-              <a href="" class="write-link attach"></a>
-              <input
-                type="text"
-                v-model='message'
-                @keyup.enter='saveMessage'
+          <div class="top">
+            <span>To: <span class="name">Everyone</span></span>
+            <a href="javascript:;" v-on:click="logout" class="logout-button">Logout</a>
+          </div>
+          <div class="chat active-chat" data-chat="person2">
+              <div class="conversation-start">
+                  <span>Today, 5:38 PM</span>
+              </div>
+              <div
+                v-for="chat in allMessages"
+                v-bind:key="chat.message.id"
+                :class="[chat.author.id === user.uid ? 'bubble me' : 'bubble you']"
               >
-              <a href="" class="write-link smiley"></a>
-              <a href="" class="write-link send"></a>
-            </div>
+                {{chat.message.content}}
+              </div>
+          </div>
+          <div class="write">
+            <a href="" class="write-link attach"></a>
+            <input
+              type="text"
+              v-model='message'
+              @keyup.enter='saveMessage'
+            >
+            <a href="" class="write-link smiley"></a>
+            <a href="" class="write-link send"></a>
+          </div>
         </div>
+      </div>
     </div>
-</div>
   </div>
 </template>
 
@@ -74,23 +49,37 @@ export default Vue.extend({
     }
   },
   methods: {
-    saveMessage () {
-      const db = this.$store.state.db
-      db.collection('chat').add({
-        message: this.message,
-        date: new Date(),
+    saveMessage (): void {
+      this.database.collection('chats').add({
+        message: {
+          id: this.generateGuid(),
+          content: this.message
+        },
         author: {
           id: this.user.uid,
           displayName: this.user.displayName
-        }
+        },
+        date: new Date()
       })
 
       // ToDo: figure out a way to put following line in 'then' part of db.collection
       this.message = ''
     },
-    getMessages (): void {
+    logout (): void {
+      firebase.auth().signOut().then(() => {
+        this.$router.push('/login')
+      })
+    },
+    saveNewUser (): void {
       const db = this.$store.state.db
-      db.collection('chat').orderBy('date').onSnapshot((querySnapshot: any) => {
+      db.collection('users').add({
+        userId: this.user.uid,
+        displayName: this.user.displayName,
+        avatarUrl: this.user.photoURL
+      })
+    },
+    getMessages (): void {
+      this.database.collection('chats').orderBy('date').onSnapshot((querySnapshot: Array<object>) => {
         this.allMessages = []
         querySnapshot.forEach((doc: any) => {
           this.allMessages.push(doc.data())
@@ -105,6 +94,24 @@ export default Vue.extend({
           this.user = {} as firebase.User
         }
       })
+    },
+    generateGuid (): string {
+      return [
+        this.generateRandomNumber(2),
+        this.generateRandomNumber(1),
+        this.generateRandomNumber(1),
+        this.generateRandomNumber(1),
+        this.generateRandomNumber(3)
+      ].join('-')
+    },
+    generateRandomNumber (count: number) {
+      let out = ''
+
+      for (let i = 0; i < count; i++) {
+        out += (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1)
+      }
+
+      return out
     }
   },
   created () {
@@ -117,6 +124,11 @@ export default Vue.extend({
         this.$router.push('/login')
       }
     })
+  },
+  computed: {
+    database: function () {
+      return this.$store.state.db
+    }
   }
 })
 </script>

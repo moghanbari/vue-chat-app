@@ -1,0 +1,28 @@
+.login-form {
+  width: 500px;
+  background: #fff;
+  height: 330px;
+  border-radius: 3px;
+  margin: 100px auto;
+  text-align: center;
+}
+.login-form h1 {
+  font-size: 22px;
+  padding: 50px 0;
+}
+.social-login{
+  display: inline-block;
+  width: 300px;
+  margin: 5px auto;
+  text-decoration:none;
+  padding:10px 15px;
+  color:#fff;
+  border-radius:3px;
+  margin-bottom:10px;
+  transition:all .3s ease-in-out;
+  text-align: center;
+  background-color: #db4437;
+}
+.social-login:hover{
+    box-shadow:0 10px 15px -5px rgba(0,0,0,0.4);
+}

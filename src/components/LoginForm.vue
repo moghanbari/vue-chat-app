@@ -1,7 +1,9 @@
 <template>
   <div class="login-form">
-    <p>This is login form</p>
-    <button @click="login">Login with google</button>
+    <h1>Simple experimental chat app</h1>
+    <a href="" class="google-login social-login" v-on:click="login">
+      Login with Google
+    </a>
   </div>
 </template>
 
@@ -39,5 +41,5 @@ export default Vue.extend({
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
+@import '../assets/style/login.scss';
 </style>

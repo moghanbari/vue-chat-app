@@ -171,8 +171,6 @@ body {
 }
 .container .right {
   position: relative;
-  float: left;
-  width: 62.4%;
   height: 100%;
 }
 .container .right .top {
@@ -266,9 +264,9 @@ body {
   border-radius: 5px;
 }
 .container .right .write input {
-  font-size: 16px;
   float: left;
-  width: 347px;
+  font-size: 16px;
+  width: 90%;
   height: 40px;
   padding: 0 10px;
   color: var(--dark);
@@ -378,6 +376,14 @@ body {
 }
 .container .right .conversation-start span:after {
   right: 0;
+}
+.logout-button {
+  font-size: 12px;
+  text-decoration: none;
+  position: absolute;
+  top: 15px;
+  right: 10px;
+  color: gray;
 }
 
 @keyframes slideFromLeft {
