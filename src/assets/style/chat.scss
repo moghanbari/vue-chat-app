@@ -385,6 +385,17 @@ body {
   right: 10px;
   color: gray;
 }
+img.avatar {
+  display: inline-block;
+  border-radius: 50%;
+  width: 35px;
+  position: absolute;
+  left: 6px;
+  top: 3px;
+}
+.bubble.you p {
+  padding-left: 40px;
+}
 
 @keyframes slideFromLeft {
   0% {

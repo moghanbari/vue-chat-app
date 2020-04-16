@@ -1,9 +1,9 @@
 <template>
   <div class="login-form">
     <h1>Simple experimental chat app</h1>
-    <a href="" class="google-login social-login" v-on:click="login">
+    <div class="google-login social-login" v-on:click="login">
       Login with Google
-    </a>
+    </div>
   </div>
 </template>
 

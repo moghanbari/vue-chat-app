@@ -7,7 +7,7 @@
             <span>To: <span class="name">Everyone</span></span>
             <a href="javascript:;" v-on:click="logout" class="logout-button">Logout</a>
           </div>
-          <div class="chat active-chat" data-chat="person2">
+          <div class="chat active-chat">
               <div class="conversation-start">
                   <span>Today, 5:38 PM</span>
               </div>
@@ -16,7 +16,8 @@
                 v-bind:key="chat.message.id"
                 :class="[chat.author.id === user.uid ? 'bubble me' : 'bubble you']"
               >
-                {{chat.message.content}}
+                <img :src="chat.author.photoURL" v-if="chat.author.id !== user.uid" class="avatar">
+                <p>{{chat.message.content}}</p>
               </div>
           </div>
           <div class="write">
@@ -57,7 +58,8 @@ export default Vue.extend({
         },
         author: {
           id: this.user.uid,
-          displayName: this.user.displayName
+          displayName: this.user.displayName,
+          photoURL: this.user.photoURL
         },
         date: new Date()
       })
